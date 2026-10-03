@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Vendor Three.js r160.1
+        run: |
+          mkdir -p game/vendor
+          curl -fsSL -o game/vendor/three.min.js https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js
+          test -s game/vendor/three.min.js
+      - name: Upload game
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: game
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
