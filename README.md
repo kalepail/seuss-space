@@ -4,9 +4,11 @@ A low-poly, Dr. Seuss–ish space set: five Cycles stills, and a browser flyer c
 
 ## Play
 
-**Live:** https://kalepail.github.io/seuss-space/
+**Play URL:** https://kalepail.github.io/seuss-space/
 
-Open `game/index.html` in a current Chrome, Edge, or Firefox. Three.js r160.1 (MIT) is vendored at `game/vendor/three.min.js`, so a local copy works from disk with no build step. The only optional network request locally is the Sniglet webfont (the UI falls back to Trebuchet / Comic Sans). The GitHub repo omits that 670KB file. The Pages workflow downloads the same r160.1 build into the site artifact, and the page falls back to jsDelivr only if the file is absent.
+That URL is the Pages target. It returns GitHub's 404 until Pages is turned on once for this repo: **Settings → Pages → Build and deployment → Source: GitHub Actions** (https://github.com/kalepail/seuss-space/settings/pages). The GitHub App used to push this repo can run Actions, but `POST /repos/kalepail/seuss-space/pages` answers **403 Resource not accessible by integration**, and `actions/deploy-pages` then **404s** because no Pages site exists yet. After that one switch, re-run **Deploy to GitHub Pages**. The workflow on `main` already unpacks the game, checks its sha256, vendors Three.js, and uploads the artifact.
+
+Open `game/index.html` in a current Chrome, Edge, or Firefox. Three.js r160.1 (MIT) is vendored at `game/vendor/three.min.js`, so a local copy works from disk with no build step. The only optional network request locally is the Sniglet webfont (the UI falls back to Trebuchet / Comic Sans). The GitHub repo stores `index.html` as gzip+base64 chunks under `game/payload/` (the page is too big for one contents-API write). The Pages job concatenates them, requires sha256 `e11eeb3772523c14a111dcd8a161e44354d16b2e5b62812d5d821c3c0ed81176`, drops `game/payload` from the artifact, and downloads the same r160.1 Three build into `game/vendor/three.min.js`. The page falls back to jsDelivr only if that file is absent. A placeholder `game/payload/0.b64` is leftover in git and is not part of the site.
 
 Or, from this folder:
 
