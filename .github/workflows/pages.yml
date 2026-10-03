@@ -23,6 +23,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Unpack game
+        run: |
+          cat game/payload/0.b64.00 game/payload/0.b64.01 game/payload/0.b64.02 game/payload/0.b64.03 game/payload/0.b64.04 game/payload/0.b64.05 \
+              game/payload/1.b64.00 game/payload/1.b64.01 game/payload/1.b64.02 game/payload/1.b64.03 game/payload/1.b64.04 game/payload/1.b64.05 \
+              game/payload/2.b64.00 game/payload/2.b64.01 game/payload/2.b64.02 game/payload/2.b64.03 game/payload/2.b64.04 game/payload/2.b64.05 \
+              game/payload/3.b64.00 game/payload/3.b64.01 game/payload/3.b64.02 game/payload/3.b64.03 game/payload/3.b64.04 game/payload/3.b64.05 \
+            | base64 -d | gunzip > game/index.html
+          echo "e11eeb3772523c14a111dcd8a161e44354d16b2e5b62812d5d821c3c0ed81176  game/index.html" | sha256sum -c
+          rm -rf game/payload
       - name: Vendor Three.js r160.1
         run: |
           mkdir -p game/vendor
